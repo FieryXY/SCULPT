@@ -1,7 +1,10 @@
 import re
+from openai import OpenAI
 import openai
 import sys
 import os
+
+client = OpenAI()
 
 def convert_prompt_to_messages(prompt):
     """
@@ -42,7 +45,7 @@ def gpt4(prompt, model="gpt-4o", max_tokens=256, temperature=0, top_p=1.0, frequ
 
     for i in range(retry + 1):
         try:
-            response = openai.ChatCompletion.create(
+            response = client.chat.completions.create(
                 model=model,
                 messages=messages,
                 max_tokens=max_tokens,
@@ -54,7 +57,7 @@ def gpt4(prompt, model="gpt-4o", max_tokens=256, temperature=0, top_p=1.0, frequ
             )
             response_text = response.choices[0].message.content
             usage = response.usage
-            return prompt, (response_text, usage)
+            return prompt, response_text, usage
         except Exception as e:
             print(f"API call failed (attempt {i+1}/{retry+1}): {e}", file=sys.stderr)
             if i == retry:

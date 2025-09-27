@@ -16,7 +16,7 @@ class PromptMetadata:
         self.generation_type = gentype
 
 def invoke_llm(model, system_prompt, user_prompt, max_tokens, temperature, top_p, index=-1):
-    if model == "gpt4o":
+    if model == "gpt-4o":
         template = "<|im_start|>system\n???INSERT SYSTEM PROMPT HERE???\n<|im_end|>\n<|im_start|>user\n???INSERT USER PROMPT HERE???\n<|im_end|>\n<|im_start|>assistant"
         prompt = template.replace('???INSERT SYSTEM PROMPT HERE???', system_prompt)
         prompt = prompt.replace('???INSERT USER PROMPT HERE???', user_prompt)
@@ -247,11 +247,12 @@ def get_dict_at_level(mapping: dict[str, any], keys: list[str], level: int):
     return get_dict_at_level(mapping[key], keys, level+1)
 
 def update_token_usage(token_usage, token_details):
-    for key in token_details.keys():
+    token_details_dict = dict((name, getattr(token_details, name)) for name in dir(token_details) if not name.startswith('__'))
+    for key in token_details_dict.keys():
         if key in token_usage.keys():
-            token_usage[key] += token_details[key]
+            token_usage[key] += token_details_dict[key]
         else:
-            token_usage[key] = token_details[key]
+            token_usage[key] = token_details_dict[key]
     return token_usage
 
 def find_headers_in_reference(references):

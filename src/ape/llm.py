@@ -1,7 +1,10 @@
 import re
 import openai
+from openai import OpenAI
 import sys
 import os
+
+client = OpenAI()
 
 def convert_prompt_to_messages(prompt):
     """
@@ -42,7 +45,7 @@ def gpt4(prompt, model="gpt-4o", max_tokens=256, temperature=0, top_p=1.0, frequ
 
     for i in range(retry + 1):
         try:
-            response = openai.ChatCompletion.create(
+            response = client.chat.completions.create(
                 model=model,
                 messages=messages,
                 max_tokens=max_tokens,

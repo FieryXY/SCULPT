@@ -86,7 +86,8 @@ class MultiLabelTask(DataProcessor):
                 labels.append(ex['label'])
                 preds.append(pred)
                 responses.append(response)
-                promptTokenCount += token_usage_i["prompt_tokens"]
+                # print("Token Usage:", token_usage_i)
+                promptTokenCount += token_usage_i.prompt_tokens
                 count += 1
                 token_usage = utils.update_token_usage(token_usage, token_usage_i)
 
@@ -630,3 +631,52 @@ class BBHCausalJudgementTask(BinaryClassificationTask):
 
         file.close()
         return exs
+
+class ADLS(MultiLabelTask):
+    categories = [
+        "yes",
+        "no",
+        "no info",
+    ]
+    labels = categories
+
+    def get_examples(self, file):
+        exs=[]
+
+        # Use pandas to read the file
+        data = pd.read_csv(file, sep="\t", header=None)
+        for i in range(len(data)):
+            text = data[0][i]
+            label = data[1][i]
+            exs.append({'id': f'train-{i}', 'label': label, 'text': text})
+        return exs
+
+    def get_train_examples(self):
+        exs = self.get_examples("data/adls/train.tsv")
+        return exs
+    
+    def get_validation_examples(self):
+        return self.get_examples("data/adls/validation.tsv")
+
+    def get_test_examples(self):
+        return self.get_examples("data/adls/test.tsv")
+
+    def get_labels(self, text):
+        try:
+            # Extract JSON content within curly braces
+            match = re.search(r'\{.*\}', text, re.DOTALL)
+            if not match:
+                print("[ERROR] No JSON-like structure found")
+                return ["no info"]
+            
+            json_string = match.group(0)
+            data = json.loads(json_string.strip())
+
+            # Get from classification key otherwise throw an error
+            if "classification" in data:
+                return [data["classification"]]
+            else:
+                print("[ERROR] Key 'classification' not found in JSON")
+                raise ValueError("Key 'classification' not found in JSON")
+        except json.JSONDecodeError:
+            return ["no info"]

@@ -100,7 +100,7 @@ class BinaryPredictor(GPT4Predictor):
         elif task == "go_emotions":
             pred = go_emotion_answer_extraction(response)   
 
-        elif task == "beaver_tails":
+        elif task == "beaver_tails" or "adls":
             pred = beaver_tails_answer_extraction(response)
         
         elif task == "bbh-disambiguation-qa":

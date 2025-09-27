@@ -2,12 +2,53 @@ import json
 from openai import OpenAI
 import random
 import concurrent.futures
+import requests
+import json
 
 # List of base URLs for the OpenAI
 base_urls1 = ["http://localhost:11430/v1","http://localhost:11431/v1", "http://localhost:11432/v1", "http://localhost:11433/v1", "http://localhost:11434/v1", "http://localhost:11435/v1", "http://localhost:11436/v1", "http://localhost:11437/v1", "http://localhost:11440/v1","http://localhost:11441/v1", "http://localhost:11442/v1", "http://localhost:11443/v1", "http://localhost:11444/v1", "http://localhost:11445/v1", "http://localhost:11446/v1", "http://localhost:11447/v1"]
 
 base_urls2 = ["http://localhost:11420/v1","http://localhost:11421/v1", "http://localhost:11422/v1", "http://localhost:11423/v1", "http://localhost:11424/v1", "http://localhost:11425/v1", "http://localhost:11426/v1", "http://localhost:11427/v1", "http://localhost:11410/v1","http://localhost:11411/v1", "http://localhost:11412/v1", "http://localhost:11413/v1", "http://localhost:11414/v1", "http://localhost:11415/v1", "http://localhost:11416/v1", "http://localhost:11417/v1", "http://localhost:11450/v1","http://localhost:11451/v1", "http://localhost:11452/v1", "http://localhost:11453/v1", "http://localhost:11454/v1", "http://localhost:11455/v1", "http://localhost:11456/v1", "http://localhost:11457/v1"]
 
+
+def run_ollama_chat_http(model_name, messages, options):
+    """
+    Runs a chat completion using a direct HTTP request to the Ollama server.
+    """
+    # The URL of the local Ollama API endpoint
+    url = "http://localhost:11434/api/chat"
+    
+    # The payload to send, matching the Ollama API specification
+    payload = {
+        "model": model_name,
+        "messages": messages,
+        "options": options,
+        "stream": False  # We want the full response at once
+    }
+    
+    try:
+        # Send the POST request
+        response = requests.post(url, json=payload)
+        
+        # Raise an exception if the request failed (e.g., 404, 500)
+        response.raise_for_status()
+        
+        # Parse the JSON response from the server
+        data = response.json()
+        
+        # Extract the content and token details
+        gen_response = data['message']['content']
+        token_details = {
+            "prompt_tokens": data.get('prompt_eval_count', 0),
+            "completion_tokens": data.get('eval_count', 0)
+        }
+        
+        return gen_response, token_details
+        
+    except requests.exceptions.RequestException as e:
+        # Handle connection errors, timeouts, etc.
+        print(f"An error occurred with the HTTP request: {e}")
+        return None, None
 
 
 def ollama(user_message, system_prompt, model="gpt4o", history=None, max_tokens=256, temperature=0, top_p=1.0, frequency_penalty=0, presence_penalty=0, retry=5, index=-1):
@@ -48,19 +89,14 @@ def ollama(user_message, system_prompt, model="gpt4o", history=None, max_tokens=
     flag = True
     while(flag):
         try:
-            client = OpenAI(base_url=base_url, api_key="ollama")
-            response = client.chat.completions.create(
-            model=model_name,
-            messages=messages,
-            temperature=temperature,
-            max_tokens=max_tokens,
-            top_p=top_p,
-            frequency_penalty=frequency_penalty,
-            presence_penalty=presence_penalty,
-            stream=False)
+            options = {
+                'temperature': temperature,
+                'top_p': top_p,
+                'num_predict': max_tokens,
+                'repeat_penalty': frequency_penalty
+            }
 
-            gen_response = response.choices[0].message.content
-            token_details = dict(response.usage)
+            gen_response, token_details = run_ollama_chat_http(model, messages, options)
             flag = False
         except Exception as e:
             print(e)

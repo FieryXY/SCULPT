@@ -34,6 +34,8 @@ def get_task_class(task_name):
         return tasks.GoEmotion
     elif task_name == "beaver_tails":
         return tasks.BeaverTails
+    elif task_name == "adls":
+        return tasks.ADLS
     else:
         raise ValueError(f"Unknown task name: {task_name}")
 
@@ -92,8 +94,8 @@ def get_args():
     parser.add_argument('--sample_type', default='random', 
                         choices=["random", "classwise"])
 
-    parser.add_argument('--generator_engine', default="gpt-4o", type=str)
-    parser.add_argument('--evaluator_engine', default="gpt-4o", type=str)
+    parser.add_argument('--generator_engine', default="llama3.1", type=str)
+    parser.add_argument('--evaluator_engine', default="llama3.1", type=str)
 
     parser.add_argument('--evaluator', default="ucb", type=str)
     parser.add_argument('--scorer', default="01", type=str)

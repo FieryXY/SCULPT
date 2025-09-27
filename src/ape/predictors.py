@@ -48,6 +48,7 @@ class BinaryPredictor(GPT4Predictor):
         
         gpt_response = utils.invoke_llm(self.opt['evaluator_engine'], prompt, ex['text'], temperature=0, top_p=1, max_tokens=1024, index=index, base_index_list_index=base_index_list_index)
         
+        print("GPT Response:", gpt_response)
         response = gpt_response[1]
         token_usage = gpt_response[2]
         
