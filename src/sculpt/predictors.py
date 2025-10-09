@@ -59,7 +59,8 @@ class BinaryPredictor(GPT4Predictor):
         promptProc = promptProc.replace('???INSERT USER PROMPT HERE???', ex['text'])
         llm.gpt4(promptProc, temperature=0, top_p=1, model=self.opt['evaluator-engine'], max_tokens=1024)"""
         
-        gpt_response = utils.invoke_llm(self.opt['evaluator_engine'], prompt, ex['text'], temperature=0, top_p=1, max_tokens=1024, index=index)
+        # After a few tests, I'm pretty sure the model is better able to follow the format if we concatenate the prompt AFTER the patient note text.
+        gpt_response = utils.invoke_llm(self.opt['evaluator_engine'], "", ex['text']+"\n\n"+prompt, temperature=0, top_p=1, max_tokens=1024, index=index)
         response = gpt_response[1]
         token_usage = gpt_response[2]
         

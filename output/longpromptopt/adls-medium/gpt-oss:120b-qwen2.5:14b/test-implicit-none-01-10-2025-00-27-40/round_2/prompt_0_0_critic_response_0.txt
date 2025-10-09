@@ -1,0 +1,49 @@
+```json
+{
+  "feedback": [
+    {
+      "step": "Identify Redundant and Irrelevant Content",
+      "suggestion": "The original prompt mixes general guidelines with very specific formatting rules. Separate the high‑level reminders (clarity, conciseness, logical flow, no redundancy) from the hard constraints (detailed feedback, example limit, accurate prompt_references). This prevents the reader from having to parse mixed instructions.",
+      "action": "Create two distinct sections: **Guidelines** (general reminders) and **Constraints** (non‑negotiable rules)."
+    },
+    {
+      "step": "Rephrase for Brevity and Simplicity",
+      "suggestion": "Use plain language and short sentences. For example, replace \"Ensure Clarity and Conciseness: The prompt must be optimized in length without sacrificing clarity\" with \"Make the prompt short but clear.\"",
+      "action": "Rewrite each reminder as a single, concise sentence."
+    },
+    {
+      "step": "Compact Information",
+      "suggestion": "Combine related reminders into one bullet. The points about avoiding redundancy and maintaining logical flow can be merged under a single heading like **Write a Clear, Logical, and Non‑Redundant Prompt**.",
+      "action": "Reduce the number of bullet points to 4‑5 total."
+    },
+    {
+      "step": "Ensure Relevance of Examples",
+      "suggestion": "Only include examples that illustrate how to apply the reminders. For instance, show a before‑and‑after of a redundant sentence, or a short snippet demonstrating a logical step order. Do not add unrelated examples such as code snippets or domain‑specific text.",
+      "action": "Limit each example section to a maximum of 6 items."
+    },
+    {
+      "step": "Logical Arrangement of Sections",
+      "suggestion": "Order the sections as follows:\n1. **Task Description** – a brief statement of what the prompt should achieve.\n2. **Guidelines** – the optimization reminders.\n3. **Constraints** – the hard rules that must be obeyed.\n4. **Examples** – concise, relevant illustrations of good vs. bad prompt elements.\n5. **Prompt References** – a nested list of the exact headings used in the final prompt.\nThis flow mirrors how a writer would construct a prompt from purpose to execution.",
+      "action": "Re‑order the current content to match this sequence."
+    },
+    {
+      "step": "Create Accurate `prompt_references`",
+      "suggestion": "List every heading and sub‑heading exactly as they will appear in the final prompt, preserving nesting (e.g., `Guidelines > Write a Clear, Logical, and Non‑Redundant Prompt`).",
+      "action": "Provide a JSON object named `prompt_references` with the full hierarchy."
+    }
+  ],
+  "prompt_references": {
+    "Task Description": {},
+    "Guidelines": {
+      "Write a Clear, Logical, and Non‑Redundant Prompt": {}
+    },
+    "Constraints": {
+      "Detailed Feedback": {},
+      "Strict Example Limit": {}
+    },
+    "Examples": {
+      "Good Prompt": {},
+      "Bad Prompt": {}
+    }
+  }
+}

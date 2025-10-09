@@ -84,18 +84,18 @@ def get_args():
                         choices=["none", "rephrase", "crossover", "rephrase-crossover"]) 
     parser.add_argument('--mutations_per_prompt', default=1, type=int)  
 
-    parser.add_argument('--minibatch_size', default=64, type=int) 
+    parser.add_argument('--minibatch_size', default=4, type=int) 
     parser.add_argument('--n_gradients', default=1, type=int)
     parser.add_argument('--n_expansion', default=1, type=int)
-    parser.add_argument('--errors_per_gradient', default=16, type=int)#4
-    parser.add_argument('--num_cluster', default=5, type=int)#4
+    parser.add_argument('--errors_per_gradient', default=2, type=int)#4
+    parser.add_argument('--num_cluster', default=4, type=int)#4
     parser.add_argument('--steps_per_gradient', default=1, type=int)
     parser.add_argument('--max_expansion_factor', default=8, type=int)
     parser.add_argument('--sample_type', default='random', 
                         choices=["random", "classwise"])
 
-    parser.add_argument('--generator_engine', default="llama3.1", type=str)
-    parser.add_argument('--evaluator_engine', default="llama3.1", type=str)
+    parser.add_argument('--generator_engine', default="gpt-oss:120b", type=str)
+    parser.add_argument('--evaluator_engine', default="gpt-oss:20b", type=str)
 
     parser.add_argument('--evaluator', default="ucb", type=str)
     parser.add_argument('--scorer', default="01", type=str)
@@ -206,8 +206,8 @@ if __name__ == '__main__':
             for usage_type in token_usage_exp:
                 token_usage_overall['expansion'][usage_type] = utils.update_token_usage(token_usage_overall['expansion'][usage_type], token_usage_exp[usage_type])
                 token_usage_sum = utils.update_token_usage(token_usage_sum, token_usage_exp[usage_type])
-            tokenExpPromptTokens.append(token_usage_sum['prompt_tokens'])
-            tokenExpCompTokens.append(token_usage_sum['completion_tokens'])
+            # tokenExpPromptTokens.append(token_usage_sum['prompt_tokens'])
+            # tokenExpCompTokens.append(token_usage_sum['completion_tokens'])
 
             # Frequency of applied actions per round
             action_count = utils.extract_action_types(rounddir)
@@ -227,8 +227,8 @@ if __name__ == '__main__':
         scores, token_usage_val = optimizer.score_candidates(candidates, task, gpt4, val_exs, args.task)
         [scores, candidates] = list(zip(*sorted(list(zip(scores, candidates)), key=lambda item:item[0], reverse=True)))
         token_usage_overall['score_candidates'] = utils.update_token_usage(token_usage_overall['score_candidates'], token_usage_val)
-        tokenScorerPromptTokens.append(token_usage_val['prompt_tokens'])
-        tokenScorerCompTokens.append(token_usage_val['completion_tokens'])
+        # tokenScorerPromptTokens.append(token_usage_val['prompt_tokens'])
+        # tokenScorerCompTokens.append(token_usage_val['completion_tokens'])
 
         # select candidates
         candidates = candidates[:config['beam_size']]
@@ -246,10 +246,10 @@ if __name__ == '__main__':
         # Save token usage in a dataframe
         tokenUsageDf = pd.DataFrame()
         tokenUsageDf['round'] = round_list
-        tokenUsageDf['expansion_prompt_tokens'] = tokenExpPromptTokens
-        tokenUsageDf['expansion_completion_tokens'] = tokenExpCompTokens
-        tokenUsageDf['scorer_prompt_tokens'] = tokenScorerPromptTokens
-        tokenUsageDf['scorer_completion_tokens'] = tokenScorerCompTokens
+        # tokenUsageDf['expansion_prompt_tokens'] = tokenExpPromptTokens
+        # tokenUsageDf['expansion_completion_tokens'] = tokenExpCompTokens
+        # tokenUsageDf['scorer_prompt_tokens'] = tokenScorerPromptTokens
+        # tokenUsageDf['scorer_completion_tokens'] = tokenScorerCompTokens
         
         # run test evaluations
         #  Update it to handle regression tasks
@@ -339,8 +339,8 @@ if __name__ == '__main__':
             metricsDf['promptTokenCount'] = promptTokenCount
             metricsDf.to_csv(f"{rounddir}/metrics.tsv", sep='\t', index=False)
     
-            tokenEvalPromptTokens.append(token_usage_eval['prompt_tokens'])
-            tokenEvalCompTokens.append(token_usage_eval['completion_tokens'])
+            # tokenEvalPromptTokens.append(token_usage_eval['prompt_tokens'])
+            # tokenEvalCompTokens.append(token_usage_eval['completion_tokens'])
                     
             # record metrics
             if args.scorer == '01':
@@ -394,8 +394,8 @@ if __name__ == '__main__':
             tokenEvalPromptTokens.append(0)
             tokenEvalCompTokens.append(0)
                     
-        tokenUsageDf['evaluation_prompt_tokens'] = tokenEvalPromptTokens
-        tokenUsageDf['evaluation_completion_tokens'] = tokenEvalCompTokens
+        # tokenUsageDf['evaluation_prompt_tokens'] = tokenEvalPromptTokens
+        # tokenUsageDf['evaluation_completion_tokens'] = tokenEvalCompTokens
         round += 1
         tokenUsageDf.to_csv(dir + "/token_usage.tsv", sep='\t', index=False)
     

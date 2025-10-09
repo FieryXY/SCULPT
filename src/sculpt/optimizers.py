@@ -1,4 +1,4 @@
-import numpy as np
+import numpy as npoptimiz
 from tqdm import tqdm
 import random
 from abc import ABC, abstractmethod
@@ -60,7 +60,8 @@ class LongPromptOptimizer(PromptOptimizer):
             with open(f"{dir}_mutation_template_{index}.txt", 'w', encoding="utf-8") as f:
                 f.write(str(mutation_prompt))
 
-            result = llm.gpt4(mutation_prompt, max_tokens=5096, temperature=0.7, top_p=1, model=self.opt['generator_engine'])
+            # result = llm.gpt4(mutation_prompt, max_tokens=5096, temperature=0.7, top_p=1, model=self.opt['generator_engine'])
+            result = utils.invoke_llm(self.opt['generator_engine'], "", mutation_prompt, max_tokens=1024, temperature=0.7, top_p=1)
             mutation_response_str = result[1]
             token_usage_i = result[2]
             token_usage = utils.update_token_usage(token_usage, token_usage_i)
@@ -142,7 +143,8 @@ class LongPromptOptimizer(PromptOptimizer):
         with open(f"{dir}_exampleupdate_prompt_{updatetype}_{i}_{count}.txt", 'w', encoding="utf-8") as f:
             f.write(prompt)
 
-        result = llm.gpt4(prompt, max_tokens=1024, temperature=0, top_p=1, model=self.opt['generator_engine'])
+        # result = llm.gpt4(prompt, max_tokens=1024, temperature=0, top_p=1, model=self.opt['generator_engine'])
+        result = utils.invoke_llm(self.opt['generator_engine'], "", prompt, max_tokens=1024, temperature=0, top_p=1)
         examples_new_str = result[1]
         token_usage = result[2]
 
@@ -402,7 +404,8 @@ class LongPromptOptimizer(PromptOptimizer):
                 with open(f"{dir}_actor_prompt_{i}.txt", 'w', encoding="utf-8") as f:
                     f.write(str(actor_prompt))
                 
-                result = llm.gpt4(actor_prompt, max_tokens=4096, temperature=0.5, top_p=1, model=self.opt['generator_engine'])
+                # result = llm.gpt4(actor_prompt, max_tokens=4096, temperature=0.5, top_p=1, model=self.opt['generator_engine'])
+                result = utils.invoke_llm(self.opt['generator_engine'], "", actor_prompt, max_tokens=4096, temperature=0.5, top_p=1)
                 actor_response_str = result[1]
                 token_usage_i = result[2]
                 token_usage = utils.update_token_usage(token_usage, token_usage_i)
@@ -499,7 +502,8 @@ class LongPromptOptimizer(PromptOptimizer):
                 with open(f"{dir}_critic_prompt_{i}.txt", 'w', encoding="utf-8") as f:
                     f.write(str(critic_prompt))
 
-                result = llm.gpt4(critic_prompt, max_tokens=7000, temperature=0.5, top_p=1, model=self.opt['generator_engine'])
+                # result = llm.gpt4(critic_prompt, max_tokens=7000, temperature=0.5, top_p=1, model=self.opt['generator_engine'])
+                result = utils.invoke_llm(self.opt['generator_engine'], "", critic_prompt, max_tokens=7000, temperature=0.5, top_p=1)
                 critic_response_str = result[1]
                 token_usage_i = result[2]
                 token_usage = utils.update_token_usage(token_usage, token_usage_i)

@@ -87,7 +87,7 @@ class MultiLabelTask(DataProcessor):
                 preds.append(pred)
                 responses.append(response)
                 # print("Token Usage:", token_usage_i)
-                promptTokenCount += token_usage_i.prompt_tokens
+                # promptTokenCount += token_usage_i.prompt_tokens
                 count += 1
                 token_usage = utils.update_token_usage(token_usage, token_usage_i)
 
@@ -166,7 +166,7 @@ class RegressionTask(DataProcessor):
                 labels.append(ex['label'])
                 preds.append(pred)
                 responses.append(response)
-                promptTokenCount += token_usage_i["prompt_tokens"]
+                # promptTokenCount += token_usage_i["prompt_tokens"]
                 count += 1
                 token_usage = utils.update_token_usage(token_usage, token_usage_i)
 
@@ -222,7 +222,7 @@ class ClassificationTask(DataProcessor):
                 labels.append(ex['label'])
                 preds.append(pred)
                 responses.append(response)
-                promptTokenCount += token_usage_i["prompt_tokens"]
+                # promptTokenCount += token_usage_i["prompt_tokens"]
                 count += 1
                 token_usage = utils.update_token_usage(token_usage, token_usage_i)
 
@@ -667,13 +667,15 @@ class ADLS(MultiLabelTask):
             match = re.search(r'\{.*\}', text, re.DOTALL)
             if not match:
                 print("[ERROR] No JSON-like structure found")
-                return ["no info"]
+                print("Text:", text)
+                return ["output was not in json"]
             
             json_string = match.group(0)
             data = json.loads(json_string.strip())
 
             # Get from classification key otherwise throw an error
             if "classification" in data:
+                print("[INFO] Extracted classification:", data["classification"])
                 return [data["classification"]]
             else:
                 print("[ERROR] Key 'classification' not found in JSON")

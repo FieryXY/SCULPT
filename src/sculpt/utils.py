@@ -3,7 +3,7 @@ import os
 import json
 import copy
 import llm
-import ollama
+import ollama_wrapper as ollama
 from collections import Counter
 import dirtyjson
 import traceback
@@ -16,13 +16,49 @@ class PromptMetadata:
         self.generation_type = gentype
 
 def invoke_llm(model, system_prompt, user_prompt, max_tokens, temperature, top_p, index=-1):
+
+    # If user_prompt has <|im_start|> and <|im_end|>, create a messages list
+    messages = []
+    if "<|im_start|>" in user_prompt and "<|im_end|>" in user_prompt:
+        parts = re.split(r'(<\|im_start\|>.*?<\|im_end\|>)', user_prompt)
+        for part in parts:
+            if part.startswith("<|im_start|>") and part.endswith("<|im_end|>"):
+                content = part[len("<|im_start|>"): -len("<|im_end|>")].strip()
+                if content.startswith("system"):
+                    role = "system"
+                    content = content[len("system"):].strip()
+                elif content.startswith("user"):
+                    role = "user"
+                    content = content[len("user"):].strip()
+                elif content.startswith("assistant"):
+                    role = "assistant"
+                    content = content[len("assistant"):].strip()
+                else:
+                    continue
+                messages.append({"role": role, "content": content})
+        # If system prompt is not already in messages, add it at the start
+        if not any(msg['role'] == 'system' for msg in messages) and system_prompt:
+            messages.insert(0, {"role": "system", "content": system_prompt})
+    else:
+        messages = [
+            {
+                "role": "system",
+                "content": system_prompt,
+            },
+            {
+                "role": "user",
+                "content": user_prompt
+            }
+        ]
+
+
     if model == "gpt-4o":
         template = "<|im_start|>system\n???INSERT SYSTEM PROMPT HERE???\n<|im_end|>\n<|im_start|>user\n???INSERT USER PROMPT HERE???\n<|im_end|>\n<|im_start|>assistant"
         prompt = template.replace('???INSERT SYSTEM PROMPT HERE???', system_prompt)
         prompt = prompt.replace('???INSERT USER PROMPT HERE???', user_prompt)
         return llm.gpt4(prompt, model, max_tokens=max_tokens, temperature=temperature, top_p=top_p)
     else:
-        return ollama.ollama(user_prompt, system_prompt, model, max_tokens=max_tokens, temperature=temperature, top_p=top_p, index=index)
+        return ollama.ollama(messages, model, max_tokens=max_tokens, temperature=temperature, top_p=top_p, index=index)
 
 def parse_prompt(prompt):
     lines = prompt.split('\n')
@@ -247,13 +283,14 @@ def get_dict_at_level(mapping: dict[str, any], keys: list[str], level: int):
     return get_dict_at_level(mapping[key], keys, level+1)
 
 def update_token_usage(token_usage, token_details):
-    token_details_dict = dict((name, getattr(token_details, name)) for name in dir(token_details) if not name.startswith('__'))
-    for key in token_details_dict.keys():
-        if key in token_usage.keys():
-            token_usage[key] += token_details_dict[key]
-        else:
-            token_usage[key] = token_details_dict[key]
-    return token_usage
+    pass
+    # token_details_dict = dict((name, getattr(token_details, name)) for name in dir(token_details) if not name.startswith('__'))
+    # for key in token_details_dict.keys():
+    #     if key in token_usage.keys():
+    #         token_usage[key] += token_details_dict[key]
+    #     else:
+    #         token_usage[key] = token_details_dict[key]
+    # return token_usage
 
 def find_headers_in_reference(references):
     found_headers = []

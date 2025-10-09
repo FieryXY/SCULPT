@@ -4,7 +4,7 @@ import openai
 import sys
 import os
 
-client = OpenAI()
+# client = OpenAI()
 
 def convert_prompt_to_messages(prompt):
     """
@@ -37,9 +37,9 @@ def gpt4(prompt, model="gpt-4o", max_tokens=256, temperature=0, top_p=1.0, frequ
     """
     Sends a structured prompt in <|im_start|> format to the OpenAI API using chat messages.
     """
-    openai.api_key = os.getenv("OPENAI_API_KEY")
-    if not openai.api_key:
-        raise ValueError("OPENAI_API_KEY environment variable is not set.")
+    # openai.api_key = os.getenv("OPENAI_API_KEY")
+    # if not openai.api_key:
+    #     raise ValueError("OPENAI_API_KEY environment variable is not set.")
 
     messages = convert_prompt_to_messages(prompt)
 

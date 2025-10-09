@@ -42,7 +42,10 @@ def send_requests_to_ports(model_name, system_prompt, user_prompt):
             
             # Check if the response is OK (HTTP status code 200)
             if response.status_code == 200:
-                print(f"Service running on {base_url}: Response - {response.json()}")
+                try:
+                    print(f"Service running on {base_url}: Response - {response.json()}")
+                except (json.JSONDecodeError, AttributeError):
+                    print(f"Service running on {base_url}: Response - {response.text}")
             else:
                 print(f"Service on {base_url} returned status code {response.status_code}: {response.text}")
         

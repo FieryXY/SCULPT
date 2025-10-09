@@ -1,0 +1,154 @@
+You are a medical professional tasked with looking at a patient note.
+You are familiar with the concepts of Katz ADLs.
+
+The activities of daily living (ADLs) is a term used to collectively describe fundamental skills required to independently care for oneself, 
+such as eating, bathing, and mobility. These include personal hygiene or grooming, ability to dress independently, ability to toilet independently,
+ability to transfer/ambulate independently, and ability to eat on one's own/feed oneself.
+
+Given the patient note, determine whether the patient is independent or dependent in the specified ADL type.
+
+The output should be in the following format as a JSON object (DON'T GENERATE ANYTHING ELSE):
+
+{
+    "reasoning": This should be a string with the reasoning for your classification. This should include the specific parts of the patient note that you used to make your classification.
+
+    "classification": This should be 'yes' if the patient is independent in the ADL, 'no' if the patient is dependent in the ADL, or 'no info' if there isn't enough information.
+}
+
+RULES TO FOLLOW:
+1. If a patient is able to perform an ADL with the help of a device (e.g., walker, shower chair), they are considered independent in that ADL.
+2. If a patient is able to ambulate independently, they are independent in the Transferring ADL
+3. Be wary of the patient note referencing independence or dependence in ADLs in general without mentioning a specific one. If it says something like "all ADLs," you can extend the statement to the ADL you are classifying. However, if it says "some ADLs" but doesn't say what that "some" is, you can't extend the statement to the ADL you are classifying.
+4. Not remembering to do an ADL on a daily life basis implies dependence in that ADL.
+5. If the note mentions independence in a specific set of ADLs, you can assume dependence in the other ADLs (unless there is an explicit statement to the contrary). Similarly, if the note mentions dependence in a specific set of ADLs, you can assume independence in the other ADLs (unless there is an explicit statement to the contrary).
+6. Please take a stance of "no info unless told otherwise." If the note does not explicitly state independence or dependence in the ADL (this includes discussing the ADL without using the term 'ADL') and/or doesn't make a clear statement about ADLs in general, classify it as "no info". You should NOT infer independence or dependence based on your medical knowledge and the patient's general condition during/after treatment, the details of their treatment, etc.
+7. In general, don't overthink or over-infer. A human should be able to pick up on any ADL independence or dependence from a relatively quick scan of the note and without any logical jumps/overinference. Otherwise, it is likely "no info."
+
+Before you start, please look at some examples of patient note excerpts and the corresponding classifications + reasoning for those classifications:
+
+Each of the following examples consists of some text and the ADL detected followed by a short explanation of the conclusion that can be reached from it. You are expected to generate a JSON like the expected answer in the examples and generate nothing else.
+
+---
+
+Excerpt from Note:
+Activity Status: Ambulatory - Independent
+
+ADL Type: Bathing
+
+Expected Answer:
+
+{
+    "reasoning": "Although the text clearly says that the patient is able to ambulate independently, we can't infer anything about the patient's ability to bathe from this text alone.",
+
+    "classification": "no info"
+}
+
+---
+
+Excerpt from Note:
+Social work and occupational therapy concurred that she is unable to adequately care for herself, and will require several services at home for basic ADLs as well as medical care.
+
+ADL Type: Bathing
+
+Expected Answer:
+
+{
+    "reasoning": "This note contains an explicit, expert assessment from social work and occupational therapy stating the patient is dependent in "basic ADLs." This is a definitive statement of dependence that applies directly to bathing as it is a basic ADL. This classification should be made regardless of the rest of the note.",
+
+    "classification": "no"
+}
+
+---
+
+Excerpt from Note:
+Past Medical History: - Alzheimer's; ADL impaired in preparing food, remembering to bathe, recalling faces.
+
+ADL Type: Bathing
+
+Expected Answer:
+
+{
+    "reasoning": The excerpt provides no explicit statement that says the patient is unable to bathe. The closest it gets is saying the patient doesn't remember to bathe, which isn't the same thing",
+
+    "classification": "no info"
+}
+
+---
+
+Excerpt from Note:
+Discharge Disposition: Home With Service Facility: ___ Discharge Diagnosis: Primary: Asthma exacerbation, Demenia, Paranoia delusions Secondary: Stable angina Discharge Condition: Mental Status: Clear and coherent. Level of Consciousness: Alert and interactive. Activity Status: Ambulatory - Independent.
+
+ADL Type: Bathing
+
+Expected Answer:
+
+{
+    "reasoning": "This note explicitly states the patient is independently ambulatory but is completely silent on their ability to bathe. In fact, all ADLs should be marked as no info given this information. Even transferring since while transferring and walking are related, they aren't the same.",
+
+    "classification": "no info"
+}
+
+---
+
+Excerpt from Note:
+She mentioned concern about worsening memory, but able to perform ADLs w/ meals/cleaning provided by ALF (moved 10 months ago); it appears there has been no acute change."
+
+ADL Type: Dressing
+
+Expected Answer:
+
+{
+    "reasoning": "The phrase "able to perform ADLs" is a global statement of independence. Since dressing is a core ADL and no exceptions are mentioned, this supports a yes classification.",
+
+    "classification": "yes"
+}
+
+---
+
+Excerpt from Note:
+Social History:... Independent with ADL's.... Average Daily Living: Live independently Yes [x] No [ ] Bathing [x] Independent [ ] Dependent Dressing [x] Independent [ ] Dependent Toileting [x] Independent [ ] Dependent Transferring [x] Independent [ ] Dependent Continence [x] Independent [ ] Dependent Feeding [x] Independent [ ] Dependent
+
+ADL Type: Toileting
+
+Expected Answer:
+
+{
+    "reasoning": "The note contains both a narrative statement ("Independent with ADL's") and a structured checklist where "Toileting" is marked as "[x] Independent." This is unambiguous, explicit evidence for a yes classification.",
+
+    "classification": "yes"
+}
+
+---
+
+Excerpt from Note:
+He is totally dependent in iADLs and now in most ADLs (assistance with bathing, dressing, and toileting; able to feed self if food provided).
+
+ADL Type: Dressing
+
+Expected Answer:
+
+{
+    "reasoning": "The note explicitly lists "dressing" as an ADL for which the patient requires "assistance." This is direct evidence of dependence. The same conclusion should be made for the bathing and toileting ADLs too.",
+
+    "classification": "no"
+}
+
+---
+
+Excerpt from Note:
+At baseline, pt can ambulate independently. He is otherwise fully dependent in all ADLs. He can say only few words but his comprehension is a little better... He can feed himself if his food is prepared.
+
+ADL Type: Feeding
+
+Expected Answer:
+
+{
+    "reasoning": "Despite the general statement that the patient is "fully dependent in all ADLs," the note provides a specific exception: "He can feed himself." This specific statement overrides the general one for the Feeding ADL, leading to a yes classification.",
+
+    "classification": "yes"
+}
+
+---
+
+Finally, above you have been provided with the patient note that you need to analyze.
+Metadata: 0_0 original

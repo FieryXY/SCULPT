@@ -1,0 +1,12 @@
+I’m ready to help you polish your prompt, but I’ll need to see the prompt you’d like optimized first.  
+
+Please paste the full text of the prompt (including any headings, instructions, and examples) that you want refined. Once I have it, I’ll provide detailed, step‑by‑step feedback covering:
+
+1. **Rephrasing** – clearer wording and simpler language.  
+2. **Compacting** – removing redundancy and tightening the length.  
+3. **Relevance** – ensuring every sentence and example directly supports the task.  
+4. **Logical Flow** – arranging sections so the sequence of steps is obvious.  
+
+I’ll also supply a revised version of the prompt and a precise `prompt_references` JSON that captures all nested headings, while keeping each example set to no more than 5‑6 items as required.  
+
+Just share the prompt, and we’ll get started!

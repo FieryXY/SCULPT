@@ -1,0 +1,2 @@
+precision_yes	recall_yes	f1_yes	support_yes	precision_no	recall_no	f1_no	support_no	precision_no info	recall_no info	f1_no info	support_no info	macro_f1	weighted_f1	accuracy	candidate	promptTokenCount
+60.0	20.689655172413794	30.76923076923077	116	12.903225806451612	28.57142857142857	17.77777777777778	14	47.05882352941176	20.0	28.07017543859649	120	25.539061328535013	28.746162843004946	20.717131474103585	0	0.0

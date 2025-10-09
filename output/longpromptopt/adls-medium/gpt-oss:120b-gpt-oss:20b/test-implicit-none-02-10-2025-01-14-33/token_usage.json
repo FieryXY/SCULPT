@@ -1,0 +1,12 @@
+{
+    "expansion": {
+        "critic": null,
+        "actor": null,
+        "mutation": null,
+        "eval": null
+    },
+    "evaluation": null,
+    "score_candidates": null,
+    "total": null,
+    "total_expansion": null
+}

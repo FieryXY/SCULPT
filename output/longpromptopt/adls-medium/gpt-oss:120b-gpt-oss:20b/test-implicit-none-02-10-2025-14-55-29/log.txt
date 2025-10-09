@@ -1,0 +1,55 @@
+{"task": "adls", "prompt_length": "medium", "prompts": "prompts/adls/prompt_1.txt", "run_name": "test", "max_threads": 20, "optimizer": "nl-gradient", "rounds": 8, "beam_size": 4, "n_test_exs": 1000, "mutation_type": "none", "mutations_per_prompt": 1, "minibatch_size": 64, "n_gradients": 1, "n_expansion": 1, "errors_per_gradient": 16, "num_cluster": 5, "steps_per_gradient": 1, "max_expansion_factor": 8, "sample_type": "random", "generator_engine": "gpt-oss:120b", "evaluator_engine": "gpt-oss:20b", "evaluator": "ucb", "scorer": "01", "eval_rounds": 8, "eval_prompts_per_round": 8, "samples_per_eval": 32, "c": 1.0, "knn_k": 2, "knn_t": 0.993, "reject_on_errors": true, "aggregate_feedbacks": "implicit", "efficient": false, "no_testeval": false, "regression_metric": "qwk", "eval_budget": 2048}
+======== ROUND 0
+5.4836273193359375e-05
+(1.0,)
+[0.00398406374501992]
+Token Usage Evals: None
+Token Usage Generation: {}
+======== ROUND 1
+0.17815852165222168
+(1.0,)
+[0.00398406374501992]
+Token Usage Evals: None
+Token Usage Generation: {'critic': None, 'actor': None, 'mutation': None, 'eval': {}}
+======== ROUND 2
+0.1823291778564453
+(1.0,)
+[0.00398406374501992]
+Token Usage Evals: None
+Token Usage Generation: {'critic': None, 'actor': None, 'mutation': None, 'eval': {}}
+======== ROUND 3
+0.18114256858825684
+(1.0,)
+[0.00398406374501992]
+Token Usage Evals: None
+Token Usage Generation: {'critic': None, 'actor': None, 'mutation': None, 'eval': {}}
+======== ROUND 4
+0.19335699081420898
+(1.0,)
+[0.00398406374501992]
+Token Usage Evals: None
+Token Usage Generation: {'critic': None, 'actor': None, 'mutation': None, 'eval': {}}
+======== ROUND 5
+0.18996119499206543
+(1.0,)
+[0.00398406374501992]
+Token Usage Evals: None
+Token Usage Generation: {'critic': None, 'actor': None, 'mutation': None, 'eval': {}}
+======== ROUND 6
+0.19136595726013184
+(1.0,)
+[0.00398406374501992]
+Token Usage Evals: None
+Token Usage Generation: {'critic': None, 'actor': None, 'mutation': None, 'eval': {}}
+======== ROUND 7
+0.18909740447998047
+(1.0,)
+[0.00398406374501992]
+Token Usage Evals: None
+Token Usage Generation: {'critic': None, 'actor': None, 'mutation': None, 'eval': {}}
+======== ROUND 8
+0.1951887607574463
+(1.0,)
+[0.00398406374501992]
+Token Usage Evals: None
+Token Usage Generation: {'critic': None, 'actor': None, 'mutation': None, 'eval': {}}
